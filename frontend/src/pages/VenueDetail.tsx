@@ -86,7 +86,21 @@ export const VenueDetail: React.FC = () => {
         api.get(`/reviews/ground/${id}`),
       ]);
 
-      setGround(groundRes.data.data.ground);
+      let fetchedGround = groundRes.data.data.ground;
+      if (fetchedGround?.slug === 'playnow-cricket-ground' || fetchedGround?.name === 'Playnow Cricket Ground') {
+        fetchedGround = {
+          ...fetchedGround,
+          location: 'Gurugram, Haryana',
+          address: 'Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102',
+          city: 'Gurugram',
+          state: 'Haryana',
+          country: 'India',
+          latitude: 28.403646,
+          longitude: 77.136787,
+          mapsUrl: 'https://maps.app.goo.gl/x6HeybuKuDvSvzDYA',
+        };
+      }
+      setGround(fetchedGround);
       setMatchPeriods(slotsRes.data.data.matchPeriods || []);
       setReviews(reviewsRes.data.data.reviews || []);
     } catch (err: any) {
