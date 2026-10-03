@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../../lib/api.js';
 import { formatCurrency } from '@be11/shared';
+import { normalizeVenuesList } from '../../utils/venueUtils.js';
 
 interface VenueStats {
   totalBookings: number;
@@ -50,7 +51,8 @@ export const AdminVenuesView: React.FC<AdminVenuesViewProps> = ({ onNavigateTab 
     setError('');
     try {
       const res = await api.get('/admin/venues');
-      setVenues(res.data.data.venues || []);
+      const rawVenues = res.data.data.venues || [];
+      setVenues(normalizeVenuesList(rawVenues));
     } catch (err: any) {
       console.error('Failed to fetch admin venues:', err);
       setError(err.response?.data?.message || 'Unable to load official venues from database.');

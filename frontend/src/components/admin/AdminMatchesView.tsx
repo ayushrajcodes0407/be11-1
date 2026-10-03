@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../../lib/api.js';
 import { formatCurrency } from '@be11/shared';
+import { normalizeVenuesList } from '../../utils/venueUtils.js';
 
 interface LiveMatchItem {
   id: string;
@@ -77,7 +78,24 @@ export const AdminMatchesView: React.FC = () => {
       if (search.trim()) params.search = search.trim();
 
       const res = await api.get('/admin/matches', { params });
-      setMatches(res.data.data.matches);
+      const rawMatches: LiveMatchItem[] = res.data.data.matches || [];
+      const normalizedMatches = rawMatches.map((m) => {
+        const isPlaynow =
+          m.groundSlug?.includes('playnow') ||
+          m.groundName?.toLowerCase().includes('playnow') ||
+          m.groundId === '8597cac9-2d50-4d71-9f16-60c1c8132ed7';
+        if (isPlaynow) {
+          return {
+            ...m,
+            groundName: 'Playnow Cricket Ground',
+            groundSlug: 'playnow-cricket-ground',
+            groundCity: 'Gurugram',
+            groundLocation: 'Gurugram, Haryana',
+          };
+        }
+        return m;
+      });
+      setMatches(normalizedMatches);
       setTotalPages(res.data.data.pagination.totalPages);
       setStats(res.data.data.stats);
     } catch (err: any) {
@@ -92,9 +110,10 @@ export const AdminMatchesView: React.FC = () => {
     try {
       const res = await api.get('/grounds');
       const groundList = res.data.data.grounds || [];
-      setGrounds(groundList);
-      if (groundList.length > 0 && !createForm.groundId) {
-        setCreateForm((prev) => ({ ...prev, groundId: groundList[0].id }));
+      const normalizedGrounds = normalizeVenuesList(groundList);
+      setGrounds(normalizedGrounds);
+      if (normalizedGrounds.length > 0 && !createForm.groundId) {
+        setCreateForm((prev) => ({ ...prev, groundId: normalizedGrounds[0].id }));
       }
     } catch (err: any) {
       console.error('Failed to load grounds:', err);
@@ -448,7 +467,7 @@ export const AdminMatchesView: React.FC = () => {
                 >
                   {grounds.map((g) => (
                     <option key={g.id} value={g.id}>
-                      {g.name} ({g.city || 'Faridabad'})
+                      {g.name} ({g.city || (g.slug?.includes('playnow') ? 'Gurugram' : 'Faridabad')})
                     </option>
                   ))}
                 </select>

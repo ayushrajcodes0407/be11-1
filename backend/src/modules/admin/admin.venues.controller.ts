@@ -30,15 +30,21 @@ export const getAdminVenues = async (req: AuthenticatedRequest, res: Response, n
       const cancelled = g.bookings.filter((b) => b.status === 'CANCELLED');
       const totalRevenue = confirmed.reduce((sum, b) => sum + (b.totalPrice || 0), 0);
 
+      const isPlaynow =
+        g.slug === 'playnow-cricket-ground' ||
+        g.slug === 'playnow-cricket-ground-sector-86-gurugram' ||
+        g.id === '8597cac9-2d50-4d71-9f16-60c1c8132ed7' ||
+        (typeof g.name === 'string' && g.name.toLowerCase().includes('playnow'));
+
       return {
         id: g.id,
-        name: g.name,
-        slug: g.slug,
+        name: isPlaynow ? 'Playnow Cricket Ground' : g.name,
+        slug: isPlaynow ? 'playnow-cricket-ground' : g.slug,
         sport: g.sport,
-        city: g.city,
-        state: g.state,
-        location: g.location,
-        address: g.address,
+        city: isPlaynow ? 'Gurugram' : g.city,
+        state: isPlaynow ? 'Haryana' : g.state,
+        location: isPlaynow ? 'Gurugram, Haryana' : g.location,
+        address: isPlaynow ? 'Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102' : g.address,
         pricePerHour: g.pricePerHour,
         pricingLabel: g.pricingLabel,
         ownerName: g.ownerName,
@@ -55,7 +61,7 @@ export const getAdminVenues = async (req: AuthenticatedRequest, res: Response, n
           revenue: totalRevenue,
           activeLiveMatches: g.matches.length,
         },
-        url: `/venues/${g.slug || g.id}`,
+        url: `/venues/${isPlaynow ? 'playnow-cricket-ground' : (g.slug || g.id)}`,
       };
     });
 

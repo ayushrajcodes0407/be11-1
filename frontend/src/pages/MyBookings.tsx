@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api.js';
 import { BookingDTO, formatCurrency } from '@be11/shared';
+import { normalizeVenue } from '../utils/venueUtils.js';
 import { SEO } from '../components/common/SEO.js';
 
 export const MyBookings: React.FC = () => {
@@ -16,7 +17,12 @@ export const MyBookings: React.FC = () => {
     setError('');
     try {
       const res = await api.get('/bookings/my');
-      setBookings(res.data.data.bookings || []);
+      const rawBookings: BookingDTO[] = res.data.data.bookings || [];
+      const normalizedBookings = rawBookings.map((b) => ({
+        ...b,
+        ground: b.ground ? normalizeVenue(b.ground) : b.ground,
+      }));
+      setBookings(normalizedBookings);
     } catch (err: any) {
       console.error('Failed to fetch bookings:', err);
       setError(err.response?.data?.message || 'Failed to load your reservations.');

@@ -300,7 +300,7 @@ Page URL: /venues/playnow-cricket-ground`,
           active: true,
           hash: computeHash('Playnow Cricket Ground baseline'),
           route: '/venues/playnow-cricket-ground',
-          tags: ['playnow', 'playnow cricket ground', 'faridabad', 'venue', 'ground', 'pricing', 'cricket ground', 'haryana'],
+          tags: ['playnow', 'playnow cricket ground', 'gurugram', 'venue', 'ground', 'pricing', 'cricket ground', 'haryana'],
         },
         {
           id: 'venue-ab-cricket-ground',
