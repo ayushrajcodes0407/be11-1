@@ -66,6 +66,7 @@ export interface VenueAEO {
     latitude: number;
     longitude: number;
   };
+  mapsUrl?: string;
   pitchType: string;
   operatingModel: string;
   matchPeriods: VenueMatchPeriod[];
@@ -231,13 +232,14 @@ export const AEO_KNOWLEDGE: AEOKnowledgeBase = {
       name: 'Playnow Cricket Ground',
       canonicalUrl: 'https://be11.in/venues/playnow-cricket-ground',
       sport: 'Cricket',
-      city: 'Faridabad',
+      city: 'Gurugram',
       state: 'Haryana',
-      address: 'Sector 59, Faridabad, Haryana 121004',
+      address: 'Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102',
       coordinates: {
-        latitude: 28.3421,
-        longitude: 77.3245,
+        latitude: 28.403646,
+        longitude: 77.136787,
       },
+      mapsUrl: 'https://maps.app.goo.gl/x6HeybuKuDvSvzDYA',
       pitchType: 'Maintained Turf Pitch',
       operatingModel: 'Dynamic Weekday vs Weekend match period matrix covering whole ground and team reservations',
       matchPeriods: [
@@ -345,7 +347,7 @@ export const AEO_KNOWLEDGE: AEOKnowledgeBase = {
         },
         {
           question: 'Where is Playnow Cricket Ground situated?',
-          answer: 'Playnow Cricket Ground is located at Sector 59, Faridabad, Haryana 121004.',
+          answer: 'Playnow Cricket Ground is located at Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102.',
         },
       ],
     },
@@ -739,8 +741,8 @@ export const AEO_KNOWLEDGE: AEOKnowledgeBase = {
     },
     {
       category: 'Venues',
-      question: 'Which cricket grounds are available for booking in Faridabad?',
-      answer: 'BE11 features verified cricket venues in Faridabad including RRR Cricket Club Kidawali Faridabad, Playnow Cricket Ground (Sector 59), and AB Cricket Ground (NIT / Aravalli precinct).',
+      question: 'Which cricket grounds are available for booking on BE11?',
+      answer: 'BE11 features verified cricket venues including RRR Cricket Club Kidawali Faridabad, Playnow Cricket Ground (Gurugram), and AB Cricket Ground (NIT / Aravalli precinct).',
     },
     {
       category: 'Matches',

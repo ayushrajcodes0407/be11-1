@@ -280,7 +280,7 @@ Page URL: /venues/rrr-cricket-club-kidawali-faridabad`,
           id: 'venue-playnow-cricket-ground',
           category: 'Venues',
           title: 'Venue: Playnow Cricket Ground',
-          content: `Playnow Cricket Ground is an official BE11 verified sports facility located at Sector 59, Faridabad, Haryana.
+          content: `Playnow Cricket Ground is an official BE11 verified sports facility located at Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102.
 Sport: Cricket
 Amenities: Natural turf pitch, floodlights, dugout, pavilion, parking
 Operating Model: Dynamic Weekday vs Weekend Match Period Matrix (Coverage: Both Teams):

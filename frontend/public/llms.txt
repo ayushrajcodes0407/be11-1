@@ -31,7 +31,7 @@
   - Match Periods: Morning (06:00–10:00 AM), Afternoon (10:00 AM–02:00 PM), Evening (02:00–06:00 PM)
   - Pricing: Individual ₹299, Half Team (11 players) ₹2,600, Entire Venue ₹5,000 (with automatic promo code BE11 WELCOMES)
 - **Playnow Cricket Ground** (`/venues/playnow-cricket-ground`)
-  - Location: Sector 59, Faridabad, Haryana
+  - Location: Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102
   - Pitch: Maintained Turf
   - Match Periods: Weekday Morning/Afternoon (₹5,000 whole / ₹2,500 team), Weekday Night (₹10,000 whole / ₹5,000 team), Weekend Morning (₹10,000 whole / ₹5,000 team), Weekend Afternoon (₹5,000 whole / ₹2,500 team), Weekend Day-Night (₹10,000 whole / ₹5,000 team), Weekend Night (₹11,000 whole / ₹5,500 team)
 - **AB Cricket Ground** (`/venues/ab-cricket-ground`)

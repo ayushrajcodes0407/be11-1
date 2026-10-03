@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../lib/api.js';
 import { useLocationStore } from '../store/locationStore.js';
+import { normalizeVenuesList } from '../utils/venueUtils.js';
 import { SEO } from '../components/common/SEO.js';
 import { FAQSection } from '../components/common/FAQSection.js';
 import { AEO_KNOWLEDGE } from '../config/aeoKnowledge.js';
@@ -103,11 +104,12 @@ export const Home: React.FC = () => {
       setGroundsLoading(true);
       try {
         let res = await api.get('/grounds', { params: { city: selectedCity } });
-        let grounds = res.data.data.grounds || [];
-        if (grounds.length === 0) {
+        let rawGrounds = res.data.data.grounds || [];
+        if (rawGrounds.length === 0) {
           const fallbackRes = await api.get('/grounds');
-          grounds = fallbackRes.data.data.grounds || [];
+          rawGrounds = fallbackRes.data.data.grounds || [];
         }
+        const grounds = normalizeVenuesList(rawGrounds);
         setPopularGrounds(grounds.slice(0, 3));
       } catch (err) {
         console.error(err);

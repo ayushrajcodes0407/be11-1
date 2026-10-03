@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { api } from '../lib/api.js';
 import { useAuthStore } from '../store/authStore.js';
+import { useLocationStore } from '../store/locationStore.js';
 import { GroundDTO, ReviewDTO, formatCurrency, normalizePhone } from '@be11/shared';
+import { normalizeVenue } from '../utils/venueUtils.js';
 import { loadRazorpaySdk } from '../lib/razorpay.js';
 import { SEO } from '../components/common/SEO.js';
 import { FAQSection } from '../components/common/FAQSection.js';
@@ -50,6 +52,7 @@ export const VenueDetail: React.FC = () => {
   const location = useLocation();
 
   const { isAuthenticated, user, updateWalletBalance } = useAuthStore();
+  const { setCity } = useLocationStore();
 
   const initialDate = searchParams.get('date') || new Date().toISOString().split('T')[0];
   const initialPeriod = canonicalPeriod(searchParams.get('period'));
@@ -157,8 +160,12 @@ export const VenueDetail: React.FC = () => {
         api.get(`/reviews/ground/${id}`),
       ]);
 
-      const g = groundRes.data.data.ground;
+      const rawG = groundRes.data.data.ground;
+      const g = normalizeVenue(rawG);
       setGround(g);
+      if (g?.city) {
+        setCity(g.city);
+      }
       setMatchPeriods(slotsRes.data.data.matchPeriods || []);
       setReviews(reviewsRes.data.data.reviews || []);
 
@@ -178,6 +185,47 @@ export const VenueDetail: React.FC = () => {
       fetchDetails();
     }
   }, [id, date]);
+
+  // Dynamic Document Title and Structured JSON-LD Data
+  useEffect(() => {
+    if (!ground) return;
+    document.title = `${ground.name} | ${ground.city || 'Gurugram'}, ${ground.state || 'Haryana'} | BE11`;
+
+    const isPlaynow = ground.slug === 'playnow-cricket-ground';
+    const jsonLd = {
+      '@context': 'https://schema.org',
+      '@type': 'SportsActivityLocation',
+      name: ground.name,
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: isPlaynow ? 'Bandhwari Road, Balola' : ground.address,
+        addressLocality: isPlaynow ? 'Gurugram' : ground.city || 'Faridabad',
+        addressRegion: ground.state || 'Haryana',
+        postalCode: isPlaynow ? '122102' : '121002',
+        addressCountry: 'IN',
+      },
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: ground.latitude || 28.403646,
+        longitude: ground.longitude || 77.136787,
+      },
+      url: window.location.href,
+    };
+
+    let script = document.getElementById('venue-jsonld') as HTMLScriptElement | null;
+    if (!script) {
+      script = document.createElement('script');
+      script.id = 'venue-jsonld';
+      script.type = 'application/ld+json';
+      document.head.appendChild(script);
+    }
+    script.textContent = JSON.stringify(jsonLd);
+
+    return () => {
+      const el = document.getElementById('venue-jsonld');
+      if (el) el.remove();
+    };
+  }, [ground]);
 
   // If selectedPeriod is DAY_NIGHT and user switches to weekday, switch to MORNING
   useEffect(() => {

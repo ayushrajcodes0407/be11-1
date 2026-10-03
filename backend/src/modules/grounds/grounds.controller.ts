@@ -43,6 +43,26 @@ const formatGroundResponse = (ground: any) => {
     videos = [];
   }
 
+  const isPlaynow =
+    ground.slug === 'playnow-cricket-ground' ||
+    ground.id === '8597cac9-2d50-4d71-9f16-60c1c8132ed7' ||
+    (ground.name && ground.name.toLowerCase().includes('playnow'));
+
+  if (isPlaynow) {
+    ground = {
+      ...ground,
+      slug: 'playnow-cricket-ground',
+      location: 'Gurugram, Haryana',
+      address: 'Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102',
+      city: 'Gurugram',
+      state: 'Haryana',
+      country: 'India',
+      latitude: 28.403646,
+      longitude: 77.136787,
+      mapsUrl: 'https://maps.app.goo.gl/x6HeybuKuDvSvzDYA',
+    };
+  }
+
   return {
     ...ground,
     amenities: parseJsonField(ground.amenities) || [],
@@ -70,6 +90,14 @@ export const getGrounds = async (req: Request, res: Response, next: NextFunction
           { city: { equals: 'Haryana' } },
           { location: { contains: 'Haryana' } },
           { address: { contains: 'Haryana' } },
+        ];
+      } else if (cityStr.toLowerCase() === 'gurugram' || cityStr.toLowerCase() === 'gurgaon') {
+        filter.OR = [
+          { city: { equals: 'Gurugram' } },
+          { location: { contains: 'Gurugram' } },
+          { address: { contains: 'Gurugram' } },
+          { slug: 'playnow-cricket-ground' },
+          { name: { contains: 'Playnow', mode: 'insensitive' } },
         ];
       } else {
         filter.OR = [

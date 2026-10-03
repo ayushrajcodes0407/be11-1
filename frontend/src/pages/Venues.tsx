@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api.js';
 import { useLocationStore } from '../store/locationStore.js';
+import { normalizeVenuesList } from '../utils/venueUtils.js';
 import { GroundDTO } from '@be11/shared';
 import { calculateHaversineDistance, Coordinates } from '../utils/geo.js';
 import { SEO } from '../components/common/SEO.js';
@@ -51,7 +52,9 @@ export const Venues: React.FC = () => {
       if (search) params.search = search;
 
       const res = await api.get('/grounds', { params });
-      setGrounds(res.data.data.grounds);
+      const rawGrounds: GroundDTO[] = res.data.data.grounds || [];
+      const normalizedGrounds = normalizeVenuesList<GroundDTO>(rawGrounds);
+      setGrounds(normalizedGrounds);
     } catch (err: any) {
       console.error(err);
       setError('Failed to retrieve venues. Please try again.');
@@ -206,8 +209,8 @@ export const Venues: React.FC = () => {
         canonical="/venues"
         faqJsonLd={[
           {
-            question: 'Which cricket grounds are available for booking on BE11 in Faridabad?',
-            answer: 'BE11 provides verified cricket venues in Faridabad including RRR Cricket Club Kidawali Faridabad, Playnow Cricket Ground (Sector 59), and AB Cricket Ground (NIT Faridabad).',
+            question: 'Which cricket grounds are available for booking on BE11?',
+            answer: 'BE11 provides verified cricket venues including RRR Cricket Club Kidawali Faridabad, Playnow Cricket Ground (Gurugram), and AB Cricket Ground (NIT Faridabad).',
           },
           {
             question: 'How do match period bookings work on BE11?',
@@ -606,8 +609,8 @@ export const Venues: React.FC = () => {
           title="Frequently Asked Questions"
           items={[
             {
-              question: 'Which cricket grounds are available for booking on BE11 in Faridabad?',
-              answer: 'BE11 provides verified cricket venues in Faridabad including RRR Cricket Club Kidawali Faridabad, Playnow Cricket Ground (Sector 59), and AB Cricket Ground (NIT Faridabad).',
+              question: 'Which cricket grounds are available for booking on BE11?',
+              answer: 'BE11 provides verified cricket venues including RRR Cricket Club Kidawali Faridabad, Playnow Cricket Ground (Gurugram), and AB Cricket Ground (NIT Faridabad).',
             },
             {
               question: 'How do match period bookings work on BE11?',

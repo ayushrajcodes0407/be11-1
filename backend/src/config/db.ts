@@ -218,6 +218,31 @@ export const syncProductionData = async (): Promise<void> => {
         },
       });
 
+      if (playnowGround) {
+        if (
+          playnowGround.city !== 'Gurugram' ||
+          playnowGround.location !== 'Gurugram, Haryana' ||
+          playnowGround.mapsUrl !== 'https://maps.app.goo.gl/x6HeybuKuDvSvzDYA' ||
+          playnowGround.address !== 'Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102'
+        ) {
+          await prisma.ground.update({
+            where: { id: playnowGround.id },
+            data: {
+              slug: 'playnow-cricket-ground',
+              location: 'Gurugram, Haryana',
+              address: 'Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102',
+              city: 'Gurugram',
+              state: 'Haryana',
+              country: 'India',
+              latitude: 28.403646,
+              longitude: 77.136787,
+              mapsUrl: 'https://maps.app.goo.gl/x6HeybuKuDvSvzDYA',
+            },
+          });
+          logger.info('✅ Synchronized Playnow Cricket Ground location to Gurugram in database');
+        }
+      }
+
       const rrrGround = await prisma.ground.findFirst({
         where: {
           OR: [

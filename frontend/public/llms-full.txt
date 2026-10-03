@@ -44,9 +44,9 @@ Official Contacts:
 ### Venue 2: Playnow Cricket Ground
 - Canonical URL: https://be11.in/venues/playnow-cricket-ground
 - Sport: Cricket
-- Address: Sector 59, Faridabad, Haryana 121004
+- Address: Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102
 - Pitch: Maintained Turf Pitch
-- Coordinates: 28.3421, 77.3245
+- Coordinates: 28.403646, 77.136787
 - Amenities: Turf pitch, high-lux floodlight towers, covered dugouts, spectator pavilion, dedicated parking, washrooms.
 - Pricing Model (Structured match periods; no hourly slots):
   - Weekday Morning (07:00 – 11:30 AM): ₹5,000 Entire Ground / ₹2,500 Team of 11

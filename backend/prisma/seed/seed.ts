@@ -207,10 +207,10 @@ async function main() {
     data: {
       name: 'Playnow Cricket Ground',
       slug: 'playnow-cricket-ground',
-      description: 'Top-tier cricket arena in Faridabad designed for competitive day and night matches. Fully equipped with tournament-grade pitch, LED floodlights, player dugout, and high quality media streaming equipment.',
-      location: 'Faridabad, Haryana',
-      address: 'Playnow Cricket Ground, Faridabad, Haryana, India',
-      city: 'Faridabad',
+      description: 'Top-tier cricket arena in Gurugram designed for competitive day and night matches. Fully equipped with tournament-grade pitch, LED floodlights, player dugout, and high quality media streaming equipment.',
+      location: 'Gurugram, Haryana',
+      address: 'Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102',
+      city: 'Gurugram',
       state: 'Haryana',
       country: 'India',
       pricePerHour: 5000.0,
@@ -242,11 +242,11 @@ async function main() {
       ownerId: owner.id,
       ownerName: 'Aanurag Jain',
       ownerPhone: '+91 95992 80399',
-      mapsUrl: 'https://maps.app.goo.gl/YWxe3yy89q7rKy9c9',
+      mapsUrl: 'https://maps.app.goo.gl/x6HeybuKuDvSvzDYA',
       rating: 0.0,
       reviewsCount: 0,
-      latitude: 28.420000,
-      longitude: 77.310000,
+      latitude: 28.403646,
+      longitude: 77.136787,
       isActive: true
     }
   });
