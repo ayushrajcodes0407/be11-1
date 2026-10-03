@@ -17,7 +17,7 @@ The architecture ensures:
 | Venue | Location | Operating Model | Pricing Strategy | Key Amenities | Owner / Management |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **RRR Cricket Club Kidawali Faridabad** | Kidawali, Faridabad, Haryana | Contact Only | Custom / Price on Request | Turf Pitch, Floodlights, Pavilion, Nets | Rishi (+91 97116 69718) |
-| **Playnow Cricket Ground** | Sector 59, Faridabad, Haryana | Match Period Matrix | Weekday / Weekend Dynamic Matrix | Turf Pitch, Floodlights, Pavilion, Dugout, Parking | Playnow Management (+91 99999 12345) |
+| **Playnow Cricket Ground** | Bandhwari Road, Balola, Gurugram, Haryana | Match Period Matrix | Weekday / Weekend Dynamic Matrix | Turf Pitch, Floodlights, Pavilion, Dugout, Parking | Aanurag Jain (+91 95992 80399) |
 | **AB Cricket Ground** | Pali-Dhauj Road, Faridabad, Haryana | Whole Ground Packages | ₹3,500 (Day) / ₹6,500 (Night) | Umpires, Scorers, Balls, Nets, Floodlights, Cafeteria | **Rajesh Bajaj** (+91 95402 28222) |
 
 ---

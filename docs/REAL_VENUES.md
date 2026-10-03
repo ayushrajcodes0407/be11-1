@@ -17,8 +17,10 @@ This document details the production-ready venue infrastructure for BE11, fully 
 
 ### Venue 2: Playnow Cricket Ground
 - **Slug**: `playnow-cricket-ground`
-- **Location**: Faridabad, Haryana
-- **Maps Link**: `https://maps.app.goo.gl/YWxe3yy89q7rKy9c9`
+- **Location**: Gurugram, Haryana
+- **Address**: Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102, India
+- **Maps Link**: `https://maps.app.goo.gl/x6HeybuKuDvSvzDYA`
+- **Decimal Coordinates**: Latitude `28.403646`, Longitude `77.136787`
 - **Owner**: Aanurag Jain (`+91 95992 80399`)
 - **Pricing Strategy**: Dynamic Weekday vs Weekend Time-Slot Matrix (Coverage: Both Teams):
   - **Weekday Morning** (06:00 - 12:00): ₹5,000
