@@ -9,6 +9,7 @@ import { loadRazorpaySdk } from '../lib/razorpay.js';
 import { SEO } from '../components/common/SEO.js';
 import { FAQSection } from '../components/common/FAQSection.js';
 import { AEO_KNOWLEDGE } from '../config/aeoKnowledge.js';
+import { normalizeVenue, normalizeVenuesList } from '../utils/venueUtils.js';
 
 interface Ground {
   id: string;
@@ -418,6 +419,12 @@ export const LiveMatches: React.FC = () => {
       });
       let fetched: Match[] = res.data?.data?.matches || res.data?.matches || [];
 
+      // Normalize ground data to canonical location source
+      fetched = fetched.map((m) => ({
+        ...m,
+        ground: normalizeVenue(m.ground),
+      }));
+
       // Exclude cancelled, closed, completed, and dummy matches
       fetched = fetched.filter((m) => {
         const status = (m.status || '').toLowerCase().trim();
@@ -480,18 +487,19 @@ export const LiveMatches: React.FC = () => {
       });
 
       socket.on('match-update', ({ matchId, action, data }: any) => {
+        const normalizedData = data ? { ...data, ground: normalizeVenue(data.ground) } : data;
         setMatches((prev) => {
           if (action === 'CREATED') {
-            if (data?.ground?.city === selectedCityRef.current) {
-              return [data, ...prev];
+            if (normalizedData?.ground?.city === selectedCityRef.current) {
+              return [normalizedData, ...prev];
             }
             return prev;
           }
-          return prev.map((m) => (m.id === matchId ? data : m));
+          return prev.map((m) => (m.id === matchId ? normalizedData : m));
         });
 
         if (selectedMatchRef.current && selectedMatchRef.current.id === matchId) {
-          setSelectedMatch(data);
+          setSelectedMatch(normalizedData);
         }
       });
     };
@@ -534,9 +542,11 @@ export const LiveMatches: React.FC = () => {
   const loadHostGrounds = async () => {
     try {
       const res = await api.get('/grounds', { params: { city: selectedCity } });
-      setHostGrounds(res.data.data.grounds);
-      if (res.data.data.grounds.length > 0) {
-        setHostGroundId(res.data.data.grounds[0].id);
+      const rawGrounds: Ground[] = res.data?.data?.grounds || [];
+      const normalized = normalizeVenuesList<Ground>(rawGrounds);
+      setHostGrounds(normalized);
+      if (normalized.length > 0) {
+        setHostGroundId(normalized[0].id);
       }
     } catch (err) {
       console.error(err);
@@ -585,7 +595,12 @@ export const LiveMatches: React.FC = () => {
       if (selectedMatch && selectedMatch.entryFee > 0 && user) {
         updateWalletBalance(user.walletBalance + selectedMatch.entryFee);
       }
-      setSelectedMatch(res.data.data.match);
+      if (res.data?.data?.match) {
+        setSelectedMatch({
+          ...res.data.data.match,
+          ground: normalizeVenue(res.data.data.match.ground),
+        });
+      }
       fetchMatches();
     } catch (err: any) {
       console.error(err);
@@ -638,8 +653,8 @@ export const LiveMatches: React.FC = () => {
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-orange-500/5 blur-[120px] pointer-events-none"></div>
 
       <SEO
-        title="Live Cricket Matches in Faridabad | Join a Match | BE11"
-        description="Find and participate in live cricket matches in Faridabad. Join active match lobbies, view match periods, and play competitive cricket on BE11."
+        title="Live Cricket Matches in Gurugram & Faridabad | Join a Match | BE11"
+        description="Find and participate in live cricket matches in Gurugram, Faridabad, and Delhi NCR. Join active match lobbies, view match periods, and play competitive cricket on BE11."
         canonical="/live-matches"
         faqJsonLd={AEO_KNOWLEDGE.services['live-matches'].faqs}
         jsonLd={{

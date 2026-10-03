@@ -466,7 +466,7 @@ export const AEO_KNOWLEDGE: AEOKnowledgeBase = {
         },
         {
           question: 'What sports are available for live matches on BE11?',
-          answer: 'BE11 currently hosts live match lobbies for Cricket and Football at verified sports grounds across Faridabad.',
+          answer: 'BE11 currently hosts live match lobbies for Cricket and Football at verified sports grounds across Delhi NCR (including Gurugram and Faridabad).',
         },
       ],
     },

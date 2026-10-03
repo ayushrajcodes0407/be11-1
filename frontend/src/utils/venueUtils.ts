@@ -19,9 +19,17 @@ export const PLAYNOW_CANONICAL_DATA = {
 export function normalizeVenue<T extends Record<string, any>>(ground: T): T {
   if (!ground) return ground;
   const g = ground as Record<string, any>;
-  if (g.slug === 'playnow-cricket-ground' || g.name === 'Playnow Cricket Ground') {
+  const isPlaynow =
+    g.slug === 'playnow-cricket-ground' ||
+    g.slug === 'playnow-cricket-ground-sector-86-gurugram' ||
+    g.id === '8597cac9-2d50-4d71-9f16-60c1c8132ed7' ||
+    (typeof g.name === 'string' && g.name.toLowerCase().includes('playnow'));
+
+  if (isPlaynow) {
     return {
       ...ground,
+      name: PLAYNOW_CANONICAL_DATA.name,
+      slug: PLAYNOW_CANONICAL_DATA.slug,
       location: PLAYNOW_CANONICAL_DATA.location,
       address: PLAYNOW_CANONICAL_DATA.address,
       city: PLAYNOW_CANONICAL_DATA.city,

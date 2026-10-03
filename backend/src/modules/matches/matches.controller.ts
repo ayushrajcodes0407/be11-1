@@ -13,6 +13,39 @@ import {
 } from '../../services/razorpay.service.js';
 import { logger } from '../../config/logger.js';
 
+const formatGroundResponse = (ground: any) => {
+  if (!ground) return ground;
+  const isPlaynow =
+    ground.slug === 'playnow-cricket-ground' ||
+    ground.slug === 'playnow-cricket-ground-sector-86-gurugram' ||
+    ground.id === '8597cac9-2d50-4d71-9f16-60c1c8132ed7' ||
+    (ground.name && ground.name.toLowerCase().includes('playnow'));
+
+  if (isPlaynow) {
+    return {
+      ...ground,
+      slug: 'playnow-cricket-ground',
+      location: 'Gurugram, Haryana',
+      address: 'Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102',
+      city: 'Gurugram',
+      state: 'Haryana',
+      country: 'India',
+      latitude: 28.403646,
+      longitude: 77.136787,
+      mapsUrl: 'https://maps.app.goo.gl/omqt5t5SVrkQTMGV9',
+    };
+  }
+  return ground;
+};
+
+export const formatMatchResponse = (match: any) => {
+  if (!match) return match;
+  return {
+    ...match,
+    ground: match.ground ? formatGroundResponse(match.ground) : match.ground,
+  };
+};
+
 // GET /api/v1/matches
 export const getMatches = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -41,6 +74,8 @@ export const getMatches = async (req: Request, res: Response, next: NextFunction
               { address: { contains: 'Haryana', mode: 'insensitive' } },
               { location: { contains: 'Faridabad', mode: 'insensitive' } },
               { address: { contains: 'Faridabad', mode: 'insensitive' } },
+              { location: { contains: 'Gurugram', mode: 'insensitive' } },
+              { address: { contains: 'Gurugram', mode: 'insensitive' } },
             ],
           },
         });
@@ -55,6 +90,10 @@ export const getMatches = async (req: Request, res: Response, next: NextFunction
               { city: { equals: 'Faridabad', mode: 'insensitive' } },
               { location: { contains: 'Delhi', mode: 'insensitive' } },
               { address: { contains: 'Delhi', mode: 'insensitive' } },
+              { location: { contains: 'Gurugram', mode: 'insensitive' } },
+              { address: { contains: 'Gurugram', mode: 'insensitive' } },
+              { location: { contains: 'Faridabad', mode: 'insensitive' } },
+              { address: { contains: 'Faridabad', mode: 'insensitive' } },
             ],
           },
         });
@@ -98,7 +137,7 @@ export const getMatches = async (req: Request, res: Response, next: NextFunction
     res.status(HttpStatus.OK).json({
       success: true,
       message: 'Matches retrieved successfully',
-      data: { matches },
+      data: { matches: matches.map(formatMatchResponse) },
     });
   } catch (error) {
     next(error);
@@ -123,7 +162,7 @@ export const getMatchById = async (req: Request, res: Response, next: NextFuncti
     res.status(HttpStatus.OK).json({
       success: true,
       message: 'Match retrieved successfully',
-      data: { match },
+      data: { match: formatMatchResponse(match) },
     });
   } catch (error) {
     next(error);
@@ -175,13 +214,15 @@ export const createMatch = async (req: AuthenticatedRequest, res: Response, next
       },
     });
 
+    const formattedMatch = formatMatchResponse(match);
+
     // Broadcast update
-    broadcastMatchUpdate(match.id, 'CREATED', match);
+    broadcastMatchUpdate(match.id, 'CREATED', formattedMatch);
 
     res.status(HttpStatus.CREATED).json({
       success: true,
       message: 'Match created successfully',
-      data: { match },
+      data: { match: formattedMatch },
     });
   } catch (error) {
     next(error);
@@ -359,12 +400,13 @@ export const updateSlotCount = async (req: AuthenticatedRequest, res: Response, 
       },
     });
 
-    broadcastMatchUpdate(id, 'UPDATED', updated);
+    const formattedUpdated = formatMatchResponse(updated);
+    broadcastMatchUpdate(id, 'UPDATED', formattedUpdated);
 
     res.status(HttpStatus.OK).json({
       success: true,
       message: 'Match updated successfully',
-      data: { match: updated },
+      data: { match: formattedUpdated },
     });
   } catch (error) {
     next(error);
@@ -451,18 +493,20 @@ export const leaveMatch = async (req: AuthenticatedRequest, res: Response, next:
       return updated;
     });
 
+    const formattedUpdatedMatch = formatMatchResponse(updatedMatch);
+
     // Send notifications & websockets broadcast
     await sendNotification(userId, {
       title: 'Left Match',
       message: `You successfully left the ${match.sport} match at ${match.ground.name}.`,
     });
 
-    broadcastMatchUpdate(id, 'LEFT', updatedMatch);
+    broadcastMatchUpdate(id, 'LEFT', formattedUpdatedMatch);
 
     res.status(HttpStatus.OK).json({
       success: true,
       message: 'Left match successfully',
-      data: { match: updatedMatch },
+      data: { match: formattedUpdatedMatch },
     });
   } catch (error) {
     next(error);
@@ -714,14 +758,15 @@ export const createPlayroomBooking = async (req: AuthenticatedRequest, res: Resp
       where: { id },
       include: { ground: true },
     });
-    if (updatedMatch) {
-      broadcastMatchUpdate(id, 'JOINED', updatedMatch);
+    const formattedUpdatedMatch = formatMatchResponse(updatedMatch);
+    if (formattedUpdatedMatch) {
+      broadcastMatchUpdate(id, 'JOINED', formattedUpdatedMatch);
     }
 
     res.status(HttpStatus.CREATED).json({
       success: true,
       message: 'Booking paid from wallet successfully',
-      data: { booking, match: updatedMatch },
+      data: { booking, match: formattedUpdatedMatch },
     });
   } catch (error) {
     next(error);
@@ -910,7 +955,7 @@ export const verifyMatchPayment = async (req: AuthenticatedRequest, res: Respons
         message: 'Payment has already been confirmed for this booking',
         data: {
           booking: existingPayment,
-          match,
+          match: formatMatchResponse(match),
         },
       });
     }
@@ -1028,12 +1073,16 @@ export const verifyMatchPayment = async (req: AuthenticatedRequest, res: Respons
       }
     });
 
-    broadcastMatchUpdate(id, 'JOINED', result.match);
+    const formattedMatchResult = result.match ? formatMatchResponse(result.match) : result.match;
+    broadcastMatchUpdate(id, 'JOINED', formattedMatchResult);
 
     res.status(HttpStatus.OK).json({
       success: true,
       message: 'Payment verified and match spot reserved successfully',
-      data: result,
+      data: {
+        booking: result.booking,
+        match: formattedMatchResult,
+      },
     });
   } catch (error) {
     next(error);

@@ -5,6 +5,7 @@ import { AppError } from '../../utils/appError.js';
 import { AuthenticatedRequest } from '../../middlewares/auth.js';
 import { broadcastMatchUpdate } from '../notifications/notifications.controller.js';
 import { adminAuditService } from './admin.audit.service.js';
+import { formatMatchResponse } from '../matches/matches.controller.js';
 
 export const getAdminMatches = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
@@ -91,7 +92,8 @@ export const getAdminMatches = async (req: AuthenticatedRequest, res: Response, 
       success: true,
       message: 'Admin live matches retrieved successfully',
       data: {
-        matches: matches.map((m) => {
+        matches: matches.map((rawM) => {
+          const m = formatMatchResponse(rawM);
           let teamA: any[] = [];
           let teamB: any[] = [];
           try {
@@ -147,16 +149,18 @@ export const getAdminMatchById = async (req: AuthenticatedRequest, res: Response
   try {
     const id = req.params.id as string;
 
-    const match = await prisma.match.findUnique({
+    const rawMatch = await prisma.match.findUnique({
       where: { id },
       include: {
         ground: true,
       },
     });
 
-    if (!match) {
+    if (!rawMatch) {
       throw new AppError('Match not found', HttpStatus.NOT_FOUND);
     }
+
+    const match = formatMatchResponse(rawMatch);
 
     let teamA: any[] = [];
     let teamB: any[] = [];
@@ -291,15 +295,17 @@ export const createAdminMatch = async (req: AuthenticatedRequest, res: Response,
       metadata: { entryFee: parsedFee, totalPlayers: parsedCapacity, groundId: ground.id },
     });
 
+    const formattedMatch = formatMatchResponse(newMatch);
+
     // 7. Broadcast Socket.IO update
     try {
-      broadcastMatchUpdate(newMatch.id, 'CREATED', newMatch);
+      broadcastMatchUpdate(newMatch.id, 'CREATED', formattedMatch);
     } catch (_) {}
 
     res.status(HttpStatus.CREATED).json({
       success: true,
       message: 'Live match created successfully',
-      data: { match: newMatch },
+      data: { match: formattedMatch },
     });
   } catch (error) {
     next(error);
