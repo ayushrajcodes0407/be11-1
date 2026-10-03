@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api.js';
 import { useLocationStore } from '../store/locationStore.js';
+import { normalizeVenuesList } from '../utils/venueUtils.js';
 import { GroundDTO } from '@be11/shared';
 import { calculateHaversineDistance, Coordinates } from '../utils/geo.js';
 
@@ -49,23 +50,8 @@ export const Venues: React.FC = () => {
       if (search) params.search = search;
 
       const res = await api.get('/grounds', { params });
-      const rawGrounds = res.data.data.grounds || [];
-      const normalizedGrounds = rawGrounds.map((g: any) => {
-        if (g.slug === 'playnow-cricket-ground' || g.name === 'Playnow Cricket Ground') {
-          return {
-            ...g,
-            location: 'Gurugram, Haryana',
-            address: 'Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102',
-            city: 'Gurugram',
-            state: 'Haryana',
-            country: 'India',
-            latitude: 28.403646,
-            longitude: 77.136787,
-            mapsUrl: 'https://maps.app.goo.gl/x6HeybuKuDvSvzDYA',
-          };
-        }
-        return g;
-      });
+      const rawGrounds: GroundDTO[] = res.data.data.grounds || [];
+      const normalizedGrounds = normalizeVenuesList<GroundDTO>(rawGrounds);
       setGrounds(normalizedGrounds);
     } catch (err: any) {
       console.error(err);

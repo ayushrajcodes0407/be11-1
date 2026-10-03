@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../lib/api.js';
 import { useLocationStore } from '../store/locationStore.js';
+import { normalizeVenuesList } from '../utils/venueUtils.js';
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -41,7 +42,8 @@ export const Home: React.FC = () => {
       setGroundsLoading(true);
       try {
         const res = await api.get('/grounds', { params: { city: selectedCity } });
-        setPopularGrounds(res.data.data.grounds.slice(0, 3));
+        const normalized = normalizeVenuesList(res.data.data.grounds || []);
+        setPopularGrounds(normalized.slice(0, 3));
       } catch (err) {
         console.error(err);
       } finally {
