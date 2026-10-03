@@ -51,7 +51,7 @@ be11/
 
 ## Official Venues & Pricing
 
-BE11 features three official Faridabad venues:
+BE11 features three official Haryana venues (Faridabad & Gurugram):
 
 1. **RRR Cricket Club Kidawali Faridabad**
    - **Location:** Kidawali, Pusta Road, Faridabad (`28.466611, 77.397333`)
@@ -59,7 +59,8 @@ BE11 features three official Faridabad venues:
    - **Pricing:** Price on request / Direct contact with owner
 
 2. **Playnow Cricket Ground**
-   - **Location:** Faridabad, Haryana (`28.420000, 77.310000`)
+   - **Location:** Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102 (`28.403646, 77.136787`)
+   - **Maps Link:** `https://maps.app.goo.gl/omqt5t5SVrkQTMGV9`
    - **Pricing (Both Teams Coverage):**
      - Weekday Morning (07:00 – 11:30): ₹5,000
      - Weekday Afternoon (12:00 – 16:30): ₹5,000

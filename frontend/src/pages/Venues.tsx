@@ -303,9 +303,9 @@ export const Venues: React.FC = () => {
                 className="w-full bg-[#EDF2F7] rounded-xl px-4 py-2.5 border border-transparent focus:border-primary focus:ring-0 transition-all font-body-md appearance-none"
               >
                 <option value="All">All Locations (3 Venues)</option>
-                <option value="Faridabad">Faridabad (3 Venues)</option>
+                <option value="Faridabad">Faridabad (RRR & AB)</option>
+                <option value="Gurugram">Gurugram (Playnow)</option>
                 <option value="Haryana">Haryana (All State)</option>
-                <option value="Gurugram">Gurugram</option>
                 <option value="Delhi">Delhi</option>
                 <option value="Noida">Noida</option>
                 <option value="Mumbai">Mumbai</option>
@@ -407,17 +407,17 @@ export const Venues: React.FC = () => {
               No venues available in this area yet.
             </h3>
             <p className="text-sm text-on-surface-variant leading-relaxed">
-              BE11 is currently live with 3 verified grounds in <strong>Faridabad, Haryana</strong>. We do not display fake grounds.
+              BE11 is currently live with 3 verified grounds across <strong>Haryana (Faridabad & Gurugram)</strong>. We do not display fake grounds.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
               <button
                 onClick={() => {
-                  setCity('Faridabad');
-                  setSearchParams({ sport: 'All', city: 'Faridabad', search: '' });
+                  setCity('All');
+                  setSearchParams({ sport: 'All', city: 'All', search: '' });
                 }}
                 className="px-6 py-3 rounded-xl bg-primary text-white font-bold text-xs btn-primary-premium shadow cursor-pointer"
               >
-                Explore Faridabad Venues (3)
+                Explore All Venues (3)
               </button>
               <button
                 onClick={() => {

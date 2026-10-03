@@ -242,7 +242,7 @@ async function main() {
       ownerId: owner.id,
       ownerName: 'Aanurag Jain',
       ownerPhone: '+91 95992 80399',
-      mapsUrl: 'https://maps.app.goo.gl/x6HeybuKuDvSvzDYA',
+      mapsUrl: 'https://maps.app.goo.gl/omqt5t5SVrkQTMGV9',
       rating: 0.0,
       reviewsCount: 0,
       latitude: 28.403646,

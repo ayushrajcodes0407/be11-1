@@ -239,7 +239,7 @@ export const AEO_KNOWLEDGE: AEOKnowledgeBase = {
         latitude: 28.403646,
         longitude: 77.136787,
       },
-      mapsUrl: 'https://maps.app.goo.gl/x6HeybuKuDvSvzDYA',
+      mapsUrl: 'https://maps.app.goo.gl/omqt5t5SVrkQTMGV9',
       pitchType: 'Maintained Turf Pitch',
       operatingModel: 'Dynamic Weekday vs Weekend match period matrix covering whole ground and team reservations',
       matchPeriods: [

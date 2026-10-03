@@ -830,15 +830,15 @@ export const VenueDetail: React.FC = () => {
       '@context': 'https://schema.org',
       '@type': 'SportsActivityLocation',
       name: ground.name,
-      description: ground.description || `Cricket ground and sports venue booking in Faridabad`,
+      description: ground.description || `Cricket ground and sports venue booking in ${ground.city || 'Haryana'}`,
       url: `https://be11.in${venueCanonical}`,
       image: heroMedia.startsWith('http') ? heroMedia : `https://be11.in${heroMedia}`,
       telephone: ground.ownerPhone || '+919711669718',
       address: {
         '@type': 'PostalAddress',
-        streetAddress: ground.address || ground.location || 'Faridabad',
-        addressLocality: 'Faridabad',
-        addressRegion: 'Haryana',
+        streetAddress: ground.address || ground.location || `${ground.city || 'Gurugram'}, ${ground.state || 'Haryana'}`,
+        addressLocality: ground.city || 'Gurugram',
+        addressRegion: ground.state || 'Haryana',
         addressCountry: 'IN',
       },
       ...(ground.latitude && ground.longitude
@@ -886,15 +886,15 @@ export const VenueDetail: React.FC = () => {
     },
     {
       question: `Where is ${ground.name} located?`,
-      answer: `${ground.name} is located at ${ground.address || ground.location || 'Faridabad, Haryana'}.`,
+      answer: `${ground.name} is located at ${ground.address || ground.location || `${ground.city || 'Gurugram'}, ${ground.state || 'Haryana'}`}.`,
     },
   ];
 
   return (
     <div className="pt-24 pb-16 min-h-screen bg-surface-container-low text-left font-poppins">
       <SEO
-        title={`${ground.name} | Cricket Ground Booking in Faridabad | BE11`}
-        description={`${ground.name} located at ${ground.address || ground.location || 'Faridabad'}. Book match periods, compare slot availability, and check ground facilities on BE11.`}
+        title={`${ground.name} | Cricket Ground Booking in ${ground.city || 'Gurugram'} | BE11`}
+        description={`${ground.name} located at ${ground.address || ground.location || ground.city || 'Gurugram'}. Book match periods, compare slot availability, and check ground facilities on BE11.`}
         canonical={venueCanonical}
         ogImage={heroMedia}
         jsonLd={venueJsonLd}

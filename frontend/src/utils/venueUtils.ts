@@ -10,7 +10,7 @@ export const PLAYNOW_CANONICAL_DATA = {
   address: 'Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102',
   latitude: 28.403646,
   longitude: 77.136787,
-  mapsUrl: 'https://maps.app.goo.gl/x6HeybuKuDvSvzDYA',
+  mapsUrl: 'https://maps.app.goo.gl/omqt5t5SVrkQTMGV9',
 };
 
 /**

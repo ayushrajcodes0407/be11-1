@@ -20,7 +20,7 @@ This document details the production-ready venue infrastructure for BE11, fully 
 - **Location**: Gurugram, Haryana
 - **Address**: Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102
 - **Decimal Coordinates**: Latitude `28.403646`, Longitude `77.136787`
-- **Maps Link**: `https://maps.app.goo.gl/x6HeybuKuDvSvzDYA`
+- **Maps Link**: `https://maps.app.goo.gl/omqt5t5SVrkQTMGV9`
 - **Owner**: Aanurag Jain (`+91 95992 80399`)
 - **Pricing Strategy**: Dynamic Weekday vs Weekend Time-Slot Matrix (Coverage: Both Teams):
   - **Weekday Morning** (06:00 - 12:00): ₹5,000
