@@ -124,11 +124,9 @@ app.all('/socket.io*', (req, res, next) => {
 // Apply rate limiter to general api endpoints
 app.use('/api', rateLimiter);
 
-// Ensure DB schema & seed data are synchronized on serverless / container request
-app.use('/api', async (_req, _res, next) => {
-  try {
-    await ensureDatabaseSchema();
-  } catch (_) {}
+// Ensure DB schema & seed data are synchronized in the background without blocking HTTP requests
+app.use('/api', (_req, _res, next) => {
+  ensureDatabaseSchema().catch(() => {});
   next();
 });
 

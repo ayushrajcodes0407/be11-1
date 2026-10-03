@@ -530,8 +530,14 @@ export const LiveMatches: React.FC = () => {
 
       setMatches(fetched);
     } catch (err: any) {
-      console.error(err);
-      setErrorMsg('Failed to fetch open playrooms.');
+      console.error('Failed to fetch matches:', err);
+      if (err.response?.status === 504 || err.code === 'ECONNABORTED') {
+        setErrorMsg('Live match service timed out. Please retry.');
+      } else if (err.response?.status >= 500) {
+        setErrorMsg('Live match service is temporarily unavailable.');
+      } else {
+        setErrorMsg('Failed to fetch open playrooms.');
+      }
     } finally {
       setLoading(false);
     }
