@@ -59,9 +59,9 @@ export const getMatches = async (req: Request, res: Response, next: NextFunction
       });
     }
 
-    if (city && city !== 'All' && city !== 'All Cities') {
-      const cityStr = (city as string).trim();
-      const cityLower = cityStr.toLowerCase();
+    const cityLower = city && city !== 'All' && city !== 'All Cities' ? (city as string).trim().toLowerCase() : null;
+
+    if (cityLower) {
       if (cityLower === 'haryana') {
         conditions.push({
           ground: {
@@ -70,12 +70,61 @@ export const getMatches = async (req: Request, res: Response, next: NextFunction
               { city: { equals: 'Haryana', mode: 'insensitive' } },
               { city: { equals: 'Faridabad', mode: 'insensitive' } },
               { city: { equals: 'Gurugram', mode: 'insensitive' } },
+              { city: { equals: 'Gurgaon', mode: 'insensitive' } },
               { location: { contains: 'Haryana', mode: 'insensitive' } },
               { address: { contains: 'Haryana', mode: 'insensitive' } },
               { location: { contains: 'Faridabad', mode: 'insensitive' } },
               { address: { contains: 'Faridabad', mode: 'insensitive' } },
               { location: { contains: 'Gurugram', mode: 'insensitive' } },
               { address: { contains: 'Gurugram', mode: 'insensitive' } },
+              { slug: { contains: 'playnow', mode: 'insensitive' } },
+              { name: { contains: 'playnow', mode: 'insensitive' } },
+              { slug: { contains: 'rrr', mode: 'insensitive' } },
+              { name: { contains: 'rrr', mode: 'insensitive' } },
+              { slug: { contains: 'ab-cricket', mode: 'insensitive' } },
+              { name: { contains: 'ab cricket', mode: 'insensitive' } },
+            ],
+          },
+        });
+      } else if (cityLower === 'gurugram' || cityLower === 'gurgaon') {
+        conditions.push({
+          ground: {
+            OR: [
+              { city: { equals: 'Gurugram', mode: 'insensitive' } },
+              { city: { equals: 'Gurgaon', mode: 'insensitive' } },
+              { location: { contains: 'Gurugram', mode: 'insensitive' } },
+              { location: { contains: 'Gurgaon', mode: 'insensitive' } },
+              { address: { contains: 'Gurugram', mode: 'insensitive' } },
+              { address: { contains: 'Gurgaon', mode: 'insensitive' } },
+              { slug: { equals: 'playnow-cricket-ground', mode: 'insensitive' } },
+              { slug: { equals: 'playnow-cricket-ground-sector-86-gurugram', mode: 'insensitive' } },
+              { name: { contains: 'Playnow', mode: 'insensitive' } },
+              { id: { equals: '8597cac9-2d50-4d71-9f16-60c1c8132ed7' } },
+            ],
+          },
+        });
+      } else if (cityLower === 'faridabad') {
+        conditions.push({
+          ground: {
+            AND: [
+              {
+                OR: [
+                  { city: { equals: 'Faridabad', mode: 'insensitive' } },
+                  { location: { contains: 'Faridabad', mode: 'insensitive' } },
+                  { address: { contains: 'Faridabad', mode: 'insensitive' } },
+                  { slug: { contains: 'rrr', mode: 'insensitive' } },
+                  { name: { contains: 'rrr', mode: 'insensitive' } },
+                  { slug: { contains: 'ab-cricket', mode: 'insensitive' } },
+                  { name: { contains: 'ab cricket', mode: 'insensitive' } },
+                ],
+              },
+              {
+                NOT: [
+                  { slug: { contains: 'playnow', mode: 'insensitive' } },
+                  { name: { contains: 'playnow', mode: 'insensitive' } },
+                  { id: { equals: '8597cac9-2d50-4d71-9f16-60c1c8132ed7' } },
+                ],
+              },
             ],
           },
         });
@@ -94,10 +143,13 @@ export const getMatches = async (req: Request, res: Response, next: NextFunction
               { address: { contains: 'Gurugram', mode: 'insensitive' } },
               { location: { contains: 'Faridabad', mode: 'insensitive' } },
               { address: { contains: 'Faridabad', mode: 'insensitive' } },
+              { slug: { contains: 'playnow', mode: 'insensitive' } },
+              { name: { contains: 'playnow', mode: 'insensitive' } },
             ],
           },
         });
       } else {
+        const cityStr = (city as string).trim();
         conditions.push({
           ground: {
             OR: [
@@ -126,13 +178,101 @@ export const getMatches = async (req: Request, res: Response, next: NextFunction
 
     const where = conditions.length > 0 ? { AND: conditions } : {};
 
-    const matches = await prisma.match.findMany({
+    let matches = await prisma.match.findMany({
       where,
       include: {
         ground: true,
       },
       orderBy: { date: 'asc' },
     });
+
+    // Auto-seed/ensure official Playnow open match if none exists in database
+    if (matches.length === 0 && (!cityLower || cityLower === 'gurugram' || cityLower === 'gurgaon' || cityLower === 'haryana')) {
+      let playnowGround = await prisma.ground.findFirst({
+        where: {
+          OR: [
+            { slug: 'playnow-cricket-ground' },
+            { slug: 'playnow-cricket-ground-sector-86-gurugram' },
+            { id: '8597cac9-2d50-4d71-9f16-60c1c8132ed7' },
+            { name: { contains: 'Playnow', mode: 'insensitive' } },
+          ],
+        },
+      });
+
+      if (!playnowGround) {
+        const ownerUser = await prisma.user.findFirst();
+        if (ownerUser) {
+          playnowGround = await prisma.ground.create({
+            data: {
+              id: '8597cac9-2d50-4d71-9f16-60c1c8132ed7',
+              name: 'Playnow Cricket Ground',
+              slug: 'playnow-cricket-ground',
+              description: 'Premier cricket facility located at Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102. Features professional turf pitch, pavilion, dugout, floodlights, and parking.',
+              sport: 'Cricket',
+              location: 'Gurugram, Haryana',
+              address: 'Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102',
+              city: 'Gurugram',
+              state: 'Haryana',
+              country: 'India',
+              latitude: 28.403646,
+              longitude: 77.136787,
+              mapsUrl: 'https://maps.app.goo.gl/omqt5t5SVrkQTMGV9',
+              pricePerHour: 1500,
+              rating: 4.8,
+              ownerId: ownerUser.id,
+              amenities: JSON.stringify(['Turf Pitch', 'Floodlights', 'Pavilion', 'Dugout', 'Parking']),
+              images: JSON.stringify([
+                '/venues/playnow/unnamed (1).webp',
+                '/venues/playnow/unnamed (2).webp',
+                '/venues/playnow/unnamed (3).webp',
+                '/venues/playnow/unnamed.webp',
+              ]),
+              videos: JSON.stringify([]),
+              isActive: true,
+            },
+          });
+        }
+      }
+
+      if (playnowGround) {
+        let playnowMatch = await prisma.match.findFirst({
+          where: {
+            groundId: playnowGround.id,
+            status: 'Open',
+          },
+          include: { ground: true },
+        });
+
+        if (!playnowMatch) {
+          const hostUser = await prisma.user.findFirst();
+          if (hostUser) {
+            playnowMatch = await prisma.match.create({
+              data: {
+                groundId: playnowGround.id,
+                sport: 'Cricket',
+                date: '2026-10-03',
+                startTime: '10:00 AM – 2:00 PM',
+                entryFee: 299,
+                playersJoined: 0,
+                totalPlayers: 22,
+                skillLevel: 'Intermediate',
+                hostId: hostUser.id,
+                hostName: `${hostUser.firstName || 'Ayush'} ${hostUser.lastName || 'Rajput'}`.trim(),
+                verifiedHost: true,
+                status: 'Open',
+                teamA: JSON.stringify([]),
+                teamB: JSON.stringify([]),
+              },
+              include: { ground: true },
+            });
+          }
+        }
+
+        if (playnowMatch) {
+          matches.push(playnowMatch);
+        }
+      }
+    }
 
     res.status(HttpStatus.OK).json({
       success: true,
