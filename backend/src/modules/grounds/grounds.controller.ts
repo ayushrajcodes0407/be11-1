@@ -16,8 +16,36 @@ const parseJsonField = (field: any) => {
 };
 
 const formatGroundResponse = (ground: any) => {
+  let location = ground.location;
+  let address = ground.address;
+  let city = ground.city;
+  let state = ground.state;
+  let country = ground.country;
+  let latitude = ground.latitude;
+  let longitude = ground.longitude;
+  let mapsUrl = ground.mapsUrl;
+
+  if (ground.slug === 'playnow-cricket-ground') {
+    location = 'Gurugram, Haryana';
+    address = 'Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102';
+    city = 'Gurugram';
+    state = 'Haryana';
+    country = 'India';
+    latitude = 28.403646;
+    longitude = 77.136787;
+    mapsUrl = 'https://maps.app.goo.gl/x6HeybuKuDvSvzDYA';
+  }
+
   return {
     ...ground,
+    location,
+    address,
+    city,
+    state,
+    country,
+    latitude,
+    longitude,
+    mapsUrl,
     amenities: parseJsonField(ground.amenities) || [],
     images: parseJsonField(ground.images) || [],
     videos: parseJsonField(ground.videos) || [],
@@ -36,7 +64,17 @@ export const getGrounds = async (req: Request, res: Response, next: NextFunction
     }
 
     if (city && city !== 'All') {
-      filter.city = { equals: city as string };
+      if (city === 'Gurugram') {
+        filter.OR = [
+          { city: { equals: 'Gurugram' } },
+          { slug: 'playnow-cricket-ground' }
+        ];
+      } else if (city === 'Faridabad') {
+        filter.city = { equals: 'Faridabad' };
+        filter.slug = { not: 'playnow-cricket-ground' };
+      } else {
+        filter.city = { equals: city as string };
+      }
     }
 
     if (search) {

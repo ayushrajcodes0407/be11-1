@@ -209,7 +209,7 @@ async function main() {
       slug: 'playnow-cricket-ground',
       description: 'Top-tier cricket arena in Gurugram designed for competitive day and night matches. Fully equipped with tournament-grade pitch, LED floodlights, player dugout, and high quality media streaming equipment.',
       location: 'Gurugram, Haryana',
-      address: 'Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102, India',
+      address: 'Bandhwari Road, Balola, Gurugram, Bandhwari, Haryana 122102',
       city: 'Gurugram',
       state: 'Haryana',
       country: 'India',
